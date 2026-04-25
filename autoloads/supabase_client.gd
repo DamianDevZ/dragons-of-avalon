@@ -105,7 +105,8 @@ func delete(table: String, filter: String) -> Signal:
 
 ## Call a Postgres RPC function (stored procedure) via PostgREST.
 ## params is a Dictionary of named arguments.
-func rpc(function_name: String, params: Dictionary = {}) -> Signal:
+## Named call_rpc to avoid conflict with Godot's built-in Node.rpc() multiplayer method.
+func call_rpc(function_name: String, params: Dictionary = {}) -> Signal:
 	return _request("POST", "/rest/v1/rpc/" + function_name, JSON.stringify(params))
 
 
