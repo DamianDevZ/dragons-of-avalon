@@ -11,18 +11,18 @@ config_version=5
 [application]
 
 config/name="Dragons of Avalon"
+run/main_scene="res://scenes/login/login.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
-run/main_scene="res://scenes/login/login.tscn"
-
-[physics]
-
-3d/physics_engine="Jolt Physics"
 
 [autoload]
 
 SupabaseClient="*res://autoloads/supabase_client.gd"
 GameState="*res://autoloads/game_state.gd"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
 
 [rendering]
 

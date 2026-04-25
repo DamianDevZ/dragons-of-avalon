@@ -1,4 +1,4 @@
-﻿## Login -- handles sign-in and sign-up via Supabase Auth.
+## Login -- handles sign-in and sign-up via Supabase Auth.
 ## On success, GameState loads the player profile then transitions to the city scene.
 extends Control
 

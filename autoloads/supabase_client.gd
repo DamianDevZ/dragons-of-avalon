@@ -1,4 +1,4 @@
-﻿extends Node
+extends Node
 
 const SUPABASE_URL : String = "https://oyoeksaytiitszzmohvp.supabase.co"
 const ANON_KEY     : String = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95b2Vrc2F5dGlpdHN6em1vaHZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNTA3MDEsImV4cCI6MjA5MjcyNjcwMX0.G7zXEgWFUI5dnGGmQZHSfoxgrRjTt0oNwIQ_Uqsz8t0"
