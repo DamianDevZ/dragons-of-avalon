@@ -139,10 +139,17 @@ func _post_auth(path: String, body: String) -> void:
 	var body_bytes : PackedByteArray = response[3]
 	var text : String = body_bytes.get_string_from_utf8()
 	var data : Variant = JSON.parse_string(text)
-	if data == null or typeof(data) != TYPE_DICTIONARY or code >= 400:
+	if code >= 400:
 		auth_error.emit(text)
 		return
+	if data == null or typeof(data) != TYPE_DICTIONARY:
+		auth_error.emit("Unexpected response from server.")
+		return
 	var pd : Dictionary = data as Dictionary
+	# Sign-up with email confirmation enabled returns a 200 with no access_token.
+	if not pd.has("access_token"):
+		auth_error.emit("CONFIRM_EMAIL")
+		return
 	_access_token  = pd.get("access_token",  "")
 	_refresh_token = pd.get("refresh_token", "")
 	var user : Variant = pd.get("user", {})

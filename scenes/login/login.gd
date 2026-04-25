@@ -43,6 +43,10 @@ func _on_auth_success(_session: Dictionary) -> void:
 
 func _on_auth_error(message: String) -> void:
 	_set_loading(false)
+	if message == "CONFIRM_EMAIL":
+		status_label.add_theme_color_override("font_color", Color(0.3, 0.8, 0.4))
+		status_label.text = "Account created! Check your email to confirm, then sign in."
+		return
 	status_label.add_theme_color_override("font_color", Color(0.9, 0.3, 0.3))
 	if "Invalid login" in message or "invalid_grant" in message:
 		status_label.text = "Incorrect email or password."
