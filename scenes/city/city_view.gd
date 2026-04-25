@@ -108,7 +108,7 @@ func _draw_tile(col: int, row: int) -> void:
 		center + Vector2(0,   hh),
 		center + Vector2(-hw, 0),
 	])
-	draw_colored_polygon(gp, PackedColorArray([gc, gc, gc, gc]))
+	draw_colored_polygon(gp, gc)
 	draw_polyline(PackedVector2Array([gp[0], gp[1], gp[2], gp[3], gp[0]]), OUTLINE, 1.0)
 
 	if not has_bld:
@@ -127,7 +127,7 @@ func _draw_tile(col: int, row: int) -> void:
 		center + Vector2(hw,  -bh),
 	])
 	var rc : Color = base_col.darkened(0.30)
-	draw_colored_polygon(rf, PackedColorArray([rc, rc, rc, rc]))
+	draw_colored_polygon(rf, rc)
 	draw_polyline(PackedVector2Array([rf[0], rf[1], rf[2], rf[3], rf[0]]), OUTLINE, 1.0)
 
 	# --- Left face (south-west, darker) ---
@@ -138,7 +138,7 @@ func _draw_tile(col: int, row: int) -> void:
 		center + Vector2(-hw, -bh),
 	])
 	var lc : Color = base_col.darkened(0.45)
-	draw_colored_polygon(lf, PackedColorArray([lc, lc, lc, lc]))
+	draw_colored_polygon(lf, lc)
 	draw_polyline(PackedVector2Array([lf[0], lf[1], lf[2], lf[3], lf[0]]), OUTLINE, 1.0)
 
 	# --- Top face (lightest) ---
@@ -149,7 +149,7 @@ func _draw_tile(col: int, row: int) -> void:
 		center + Vector2(-hw, -bh),
 	])
 	var tc : Color = base_col.lightened(0.12)
-	draw_colored_polygon(tf, PackedColorArray([tc, tc, tc, tc]))
+	draw_colored_polygon(tf, tc)
 	draw_polyline(PackedVector2Array([tf[0], tf[1], tf[2], tf[3], tf[0]]), OUTLINE, 1.0)
 
 	# --- Label on top face ---
