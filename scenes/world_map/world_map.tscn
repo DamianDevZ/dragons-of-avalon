@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scenes/world_map/world_map.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/world_map/world_map_view.gd" id="2"]
 
 [node name="WorldMap" type="Control"]
 anchor_right = 1.0
@@ -36,11 +37,8 @@ unique_name_in_owner = true
 text = "Loading..."
 horizontal_alignment = 2
 
-[node name="Scroll" type="ScrollContainer" parent="VBox"]
-size_flags_vertical = 3
-
-[node name="TileGrid" type="GridContainer" parent="VBox/Scroll"]
+[node name="WorldMapView" type="Control" parent="VBox"]
 unique_name_in_owner = true
-theme_override_constants/h_separation = 4
-theme_override_constants/v_separation = 4
-columns = 20
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("2")
