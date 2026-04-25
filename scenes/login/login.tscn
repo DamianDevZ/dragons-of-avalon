@@ -1,0 +1,72 @@
+[gd_scene load_steps=2 format=3 uid="uid://login_scene"]
+
+[ext_resource type="Script" path="res://scenes/login/login.gd" id="1_login"]
+
+[node name="Login" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_login")
+
+[node name="Background" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.04, 0.08, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(420, 0)
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/Panel"]
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="CenterContainer/Panel/VBox"]
+text = "Dragons of Avalon"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 28
+
+[node name="Subtitle" type="Label" parent="CenterContainer/Panel/VBox"]
+text = "Sign in to your kingdom"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 13
+
+[node name="Spacer" type="Control" parent="CenterContainer/Panel/VBox"]
+custom_minimum_size = Vector2(0, 8)
+
+[node name="EmailLabel" type="Label" parent="CenterContainer/Panel/VBox"]
+text = "Email"
+
+[node name="EmailInput" type="LineEdit" parent="CenterContainer/Panel/VBox"]
+name = "EmailInput"
+placeholder_text = "your@email.com"
+custom_minimum_size = Vector2(0, 40)
+
+[node name="PasswordLabel" type="Label" parent="CenterContainer/Panel/VBox"]
+text = "Password"
+
+[node name="PasswordInput" type="LineEdit" parent="CenterContainer/Panel/VBox"]
+name = "PasswordInput"
+placeholder_text = "Password"
+secret = true
+custom_minimum_size = Vector2(0, 40)
+
+[node name="StatusLabel" type="Label" parent="CenterContainer/Panel/VBox"]
+name = "StatusLabel"
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 3
+theme_override_colors/font_color = Color(0.9, 0.3, 0.3, 1)
+
+[node name="SignInButton" type="Button" parent="CenterContainer/Panel/VBox"]
+name = "SignInButton"
+text = "Sign In"
+custom_minimum_size = Vector2(0, 44)
+
+[node name="Divider" type="HSeparator" parent="CenterContainer/Panel/VBox"]
+
+[node name="SignUpButton" type="Button" parent="CenterContainer/Panel/VBox"]
+name = "SignUpButton"
+text = "Create Account"
+custom_minimum_size = Vector2(0, 44)
