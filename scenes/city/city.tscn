@@ -44,6 +44,11 @@ text = "Your Kingdom"
 horizontal_alignment = 2
 size_flags_horizontal = 3
 
+[node name="WorldMapButton" type="Button" parent="VBox/ResourceBar/Margin/HBox"]
+unique_name_in_owner = true
+text = "World Map"
+custom_minimum_size = Vector2(110, 0)
+
 [node name="Scroll" type="ScrollContainer" parent="VBox"]
 size_flags_vertical = 3
 

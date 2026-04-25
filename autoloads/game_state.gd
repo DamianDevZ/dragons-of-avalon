@@ -42,6 +42,11 @@ class ResourceSnapshot extends RefCounted:
 	var food  : float = 0.0
 	var stone : float = 0.0
 	var gold  : float = 0.0
+	## Production rates per second (from server).
+	var wood_rate  : float = 0.0
+	var food_rate  : float = 0.0
+	var stone_rate : float = 0.0
+	var gold_rate  : float = 0.0
 	## ISO-8601 timestamp string from the server. Used to extrapolate
 	## displayed values client-side between refreshes.
 	var last_calculated_at : String = ""
@@ -103,22 +108,31 @@ func refresh_resources() -> void:
 		return
 
 	if result is Dictionary:
-		resources.wood               = result.get("wood",  0.0)
-		resources.food               = result.get("food",  0.0)
-		resources.stone              = result.get("stone", 0.0)
-		resources.gold               = result.get("gold",  0.0)
-		resources.last_calculated_at = result.get("last_calculated_at", "")
+		var r : Dictionary = result as Dictionary
+		var rates : Variant = r.get("rates", {})
+		var rd : Dictionary = rates as Dictionary if typeof(rates) == TYPE_DICTIONARY else {}
+		resources.wood               = float(r.get("wood",  0.0))
+		resources.food               = float(r.get("food",  0.0))
+		resources.stone              = float(r.get("stone", 0.0))
+		resources.gold               = float(r.get("gold",  0.0))
+		resources.wood_rate          = float(rd.get("wood",  0.0))
+		resources.food_rate          = float(rd.get("food",  0.0))
+		resources.stone_rate         = float(rd.get("stone", 0.0))
+		resources.gold_rate          = float(rd.get("gold",  0.0))
+		resources.last_calculated_at = str(r.get("last_calculated_at", ""))
 		resources_updated.emit(resources)
 
 
-## Returns the extrapolated current amount of a resource without hitting
-## the server. Useful for smooth UI updates between refreshes.
-## production_per_sec should come from a locally cached buildings list.
-func get_live_resource(base_amount: float, production_per_sec: float) -> float:
-	# Parse the ISO-8601 timestamp and compute elapsed seconds locally.
-	# This is display-only; the server recalculates on any spend action.
+## Returns the extrapolated current amount of wood/food/stone/gold without
+## hitting the server. Uses the production rates returned by the Edge Function.
+func get_live_wood()  -> float: return _extrapolate(resources.wood,  resources.wood_rate)
+func get_live_food()  -> float: return _extrapolate(resources.food,  resources.food_rate)
+func get_live_stone() -> float: return _extrapolate(resources.stone, resources.stone_rate)
+func get_live_gold()  -> float: return _extrapolate(resources.gold,  resources.gold_rate)
+
+func _extrapolate(base: float, rate: float) -> float:
 	if resources.last_calculated_at == "":
-		return base_amount
-	var t := Time.get_unix_time_from_datetime_string(resources.last_calculated_at)
-	var elapsed := Time.get_unix_time_from_system() - t
-	return base_amount + (production_per_sec * elapsed)
+		return base
+	var t : float = Time.get_unix_time_from_datetime_string(resources.last_calculated_at)
+	var elapsed : float = Time.get_unix_time_from_system() - t
+	return base + rate * maxf(elapsed, 0.0)

@@ -7,16 +7,27 @@ const GRID_ROWS : int = 5
 @onready var food_label    : Label         = %FoodLabel
 @onready var stone_label   : Label         = %StoneLabel
 @onready var gold_label    : Label         = %GoldLabel
-@onready var city_name_lbl : Label         = %CityNameLabel
-@onready var building_grid : GridContainer = %BuildingGrid
+@onready var city_name_lbl    : Label         = %CityNameLabel
+@onready var world_map_button : Button        = %WorldMapButton
+@onready var building_grid    : GridContainer = %BuildingGrid
 
 ## Keyed by "grid_x_grid_y" string, value is the building Dictionary from DB.
 var _buildings : Dictionary = {}
 
 
+var _tick : float = 0.0
+
+func _process(delta: float) -> void:
+	_tick += delta
+	if _tick >= 1.0:
+		_tick = 0.0
+		_update_resource_bar()
+
+
 func _ready() -> void:
 	GameState.resources_updated.connect(_on_resources_updated)
 	GameState.player_loaded.connect(_on_player_loaded)
+	world_map_button.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/world_map/world_map.tscn"))
 	_update_resource_bar()
 	# Show player name if already loaded (e.g. reconnect scenario).
 	if GameState.player != null:
@@ -81,11 +92,10 @@ func _on_slot_pressed(col: int, row: int) -> void:
 
 
 func _update_resource_bar() -> void:
-	var r := GameState.resources
-	wood_label.text  = "Wood:  " + str(int(r.wood))
-	food_label.text  = "Food:  " + str(int(r.food))
-	stone_label.text = "Stone: " + str(int(r.stone))
-	gold_label.text  = "Gold:  " + str(int(r.gold))
+	wood_label.text  = "Wood:  " + str(int(GameState.get_live_wood()))
+	food_label.text  = "Food:  " + str(int(GameState.get_live_food()))
+	stone_label.text = "Stone: " + str(int(GameState.get_live_stone()))
+	gold_label.text  = "Gold:  " + str(int(GameState.get_live_gold()))
 
 
 func _on_resources_updated(_snapshot: Variant) -> void:
