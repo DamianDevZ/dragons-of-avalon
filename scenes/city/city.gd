@@ -1,21 +1,16 @@
 extends Control
 
-const GRID_COLS : int = 5
-const GRID_ROWS : int = 5
+@onready var wood_label       : Label    = %WoodLabel
+@onready var food_label       : Label    = %FoodLabel
+@onready var stone_label      : Label    = %StoneLabel
+@onready var gold_label       : Label    = %GoldLabel
+@onready var city_name_lbl    : Label    = %CityNameLabel
+@onready var world_map_button : Button   = %WorldMapButton
+@onready var city_view        : Control  = %CityView
 
-@onready var wood_label    : Label         = %WoodLabel
-@onready var food_label    : Label         = %FoodLabel
-@onready var stone_label   : Label         = %StoneLabel
-@onready var gold_label    : Label         = %GoldLabel
-@onready var city_name_lbl    : Label         = %CityNameLabel
-@onready var world_map_button : Button        = %WorldMapButton
-@onready var building_grid    : GridContainer = %BuildingGrid
-
-## Keyed by "grid_x_grid_y" string, value is the building Dictionary from DB.
 var _buildings : Dictionary = {}
-
-
 var _tick : float = 0.0
+
 
 func _process(delta: float) -> void:
 	_tick += delta
@@ -28,8 +23,8 @@ func _ready() -> void:
 	GameState.resources_updated.connect(_on_resources_updated)
 	GameState.player_loaded.connect(_on_player_loaded)
 	world_map_button.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/world_map/world_map.tscn"))
+	city_view.connect("slot_tapped", _on_slot_pressed)
 	_update_resource_bar()
-	# Show player name if already loaded (e.g. reconnect scenario).
 	if GameState.player != null:
 		_on_player_loaded(GameState.player)
 	_load_city()
@@ -53,33 +48,7 @@ func _load_city() -> void:
 				_buildings[key] = b
 	elif result is Dictionary:
 		push_error("[City] Failed to load buildings: " + str((result as Dictionary).get("error", "")))
-	_render_grid()
-
-
-func _render_grid() -> void:
-	for child in building_grid.get_children():
-		child.queue_free()
-	for row in range(GRID_ROWS):
-		for col in range(GRID_COLS):
-			var key : String = "%d_%d" % [col, row]
-			var slot := Button.new()
-			slot.custom_minimum_size = Vector2(120, 90)
-			slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			if _buildings.has(key):
-				var b : Dictionary = _buildings[key] as Dictionary
-				var btype : String  = str(b.get("building_type", "empty"))
-				var lvl   : int     = int(b.get("level", 1))
-				var upgrading : bool = b.get("upgrade_complete_at", null) != null
-				var display : String = btype.capitalize().replace("_", " ")
-				slot.text = display + "\nLv " + str(lvl)
-				if upgrading:
-					slot.text += " (upgrading)"
-			else:
-				slot.text = "[ Empty ]\n(" + str(col) + "," + str(row) + ")"
-			var c : int = col
-			var r : int = row
-			slot.pressed.connect(func(): _on_slot_pressed(c, r))
-			building_grid.add_child(slot)
+	city_view.call("set_buildings", _buildings)
 
 
 func _on_slot_pressed(col: int, row: int) -> void:
@@ -88,7 +57,7 @@ func _on_slot_pressed(col: int, row: int) -> void:
 		var b : Dictionary = _buildings[key] as Dictionary
 		print("[City] Tapped building: ", b.get("building_type"), " at (", col, ",", row, ")")
 	else:
-		print("[City] Empty slot (", col, ",", row, ") — build menu would open here")
+		print("[City] Empty slot (", col, ",", row, ") — build menu here")
 
 
 func _update_resource_bar() -> void:

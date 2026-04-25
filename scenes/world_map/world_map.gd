@@ -14,9 +14,17 @@ const TILE_COLORS : Dictionary = {
 	"volcano":  Color(0.80, 0.25, 0.10),
 }
 
-@onready var tile_grid   : GridContainer = %TileGrid
-@onready var status_lbl  : Label         = %StatusLabel
-@onready var back_button : Button        = %BackButton
+@onready var tile_grid        : GridContainer   = %TileGrid
+@onready var status_lbl       : Label           = %StatusLabel
+@onready var back_button      : Button          = %BackButton
+@onready var scroll_container : ScrollContainer = $VBox/Scroll
+
+## Drag-to-pan state
+const DRAG_THRESHOLD_SQ : float = 64.0  # 8 px before drag is committed
+var _mouse_held    : bool     = false
+var _is_dragging   : bool     = false
+var _press_pos     : Vector2  = Vector2.ZERO
+var _scroll_start  : Vector2i = Vector2i.ZERO
 
 ## world_tiles rows keyed by "x_y".
 var _tiles : Dictionary = {}
@@ -25,6 +33,35 @@ var _tiles : Dictionary = {}
 func _ready() -> void:
 	back_button.pressed.connect(_on_back)
 	_load_map()
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.button_index != MOUSE_BUTTON_LEFT:
+			return
+		if mb.pressed:
+			_mouse_held   = true
+			_is_dragging  = false
+			_press_pos    = mb.global_position
+			_scroll_start = Vector2i(
+				scroll_container.scroll_horizontal,
+				scroll_container.scroll_vertical
+			)
+		else:
+			if _is_dragging:
+				get_viewport().set_input_as_handled()  # cancel tile button press
+			_mouse_held  = false
+			_is_dragging = false
+	elif event is InputEventMouseMotion and _mouse_held:
+		var mm     := event as InputEventMouseMotion
+		var moved  : Vector2 = mm.global_position - _press_pos
+		if not _is_dragging and moved.length_squared() > DRAG_THRESHOLD_SQ:
+			_is_dragging = true
+		if _is_dragging:
+			scroll_container.scroll_horizontal = _scroll_start.x - int(moved.x)
+			scroll_container.scroll_vertical   = _scroll_start.y - int(moved.y)
+			get_viewport().set_input_as_handled()
 
 
 func _load_map() -> void:

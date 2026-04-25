@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scenes/city/city.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/city/city_view.gd" id="2"]
 
 [node name="City" type="Control"]
 anchor_right = 1.0
@@ -49,12 +50,8 @@ unique_name_in_owner = true
 text = "World Map"
 custom_minimum_size = Vector2(110, 0)
 
-[node name="Scroll" type="ScrollContainer" parent="VBox"]
-size_flags_vertical = 3
-
-[node name="BuildingGrid" type="GridContainer" parent="VBox/Scroll"]
+[node name="CityView" type="Control" parent="VBox"]
 unique_name_in_owner = true
 size_flags_horizontal = 3
-theme_override_constants/h_separation = 12
-theme_override_constants/v_separation = 12
-columns = 5
+size_flags_vertical = 3
+script = ExtResource("2")
