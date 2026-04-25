@@ -13,15 +13,10 @@
 extends Node
 
 # ---------------------------------------------------------------------------
-# Configuration — fill these in from your Supabase project dashboard.
-# Project Settings → API → Project URL & anon/public key
+# Configuration
 # ---------------------------------------------------------------------------
-# Credentials are loaded from autoloads/supabase_config.gd (gitignored).
-# Copy autoloads/supabase_config.example.gd → autoloads/supabase_config.gd
-# and fill in your values. The config file is an autoload registered BEFORE
-# this singleton so its constants are available here at parse time.
-const SUPABASE_URL  := SupabaseConfig.URL
-const ANON_KEY      := SupabaseConfig.ANON_KEY
+const SUPABASE_URL  := "https://oyoeksaytiitszzmohvp.supabase.co"
+const ANON_KEY      := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95b2Vrc2F5dGlpdHN6em1vaHZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNTA3MDEsImV4cCI6MjA5MjcyNjcwMX0.G7zXEgWFUI5dnGGmQZHSfoxgrRjTt0oNwIQ_Uqsz8t0"
 
 # ---------------------------------------------------------------------------
 # Signals

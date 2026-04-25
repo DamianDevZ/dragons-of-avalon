@@ -21,7 +21,6 @@ run/main_scene="res://scenes/login/login.tscn"
 
 [autoload]
 
-SupabaseConfig="*res://autoloads/supabase_config.gd"
 SupabaseClient="*res://autoloads/supabase_client.gd"
 GameState="*res://autoloads/game_state.gd"
 
