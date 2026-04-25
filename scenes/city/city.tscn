@@ -6,3 +6,50 @@
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ResourceBar" type="PanelContainer" parent="VBox"]
+
+[node name="Margin" type="MarginContainer" parent="VBox/ResourceBar"]
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBox" type="HBoxContainer" parent="VBox/ResourceBar/Margin"]
+theme_override_constants/separation = 32
+
+[node name="WoodLabel" type="Label" parent="VBox/ResourceBar/Margin/HBox"]
+unique_name_in_owner = true
+text = "Wood: 0"
+
+[node name="FoodLabel" type="Label" parent="VBox/ResourceBar/Margin/HBox"]
+unique_name_in_owner = true
+text = "Food: 0"
+
+[node name="StoneLabel" type="Label" parent="VBox/ResourceBar/Margin/HBox"]
+unique_name_in_owner = true
+text = "Stone: 0"
+
+[node name="GoldLabel" type="Label" parent="VBox/ResourceBar/Margin/HBox"]
+unique_name_in_owner = true
+text = "Gold: 0"
+
+[node name="CityNameLabel" type="Label" parent="VBox/ResourceBar/Margin/HBox"]
+unique_name_in_owner = true
+text = "Your Kingdom"
+horizontal_alignment = 2
+size_flags_horizontal = 3
+
+[node name="Scroll" type="ScrollContainer" parent="VBox"]
+size_flags_vertical = 3
+
+[node name="BuildingGrid" type="GridContainer" parent="VBox/Scroll"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 5
