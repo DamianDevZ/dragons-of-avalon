@@ -40,13 +40,12 @@ var _origin    : Vector2    = Vector2.ZERO
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	resized.connect(_on_resized)
 
 
-func _notification(what: int) -> void:
-	super(what)
-	if what == NOTIFICATION_RESIZED:
-		_recalc_origin()
-		queue_redraw()
+func _on_resized() -> void:
+	_recalc_origin()
+	queue_redraw()
 
 
 func _recalc_origin() -> void:
