@@ -6,14 +6,14 @@ signal tile_pressed(x: int, y: int)
 const TILE_W : int = 72
 const TILE_H : int = 36
 
-## Per-terrain: colour and visual height (px extruded above ground).
+## Per-terrain flat colours.
 const TERRAIN : Dictionary = {
-	"field":    {"color": Color(0.85, 0.80, 0.30), "height": 5.0 },
-	"forest":   {"color": Color(0.15, 0.50, 0.20), "height": 26.0},
-	"mountain": {"color": Color(0.62, 0.58, 0.54), "height": 38.0},
-	"lake":     {"color": Color(0.20, 0.45, 0.75), "height": 2.0 },
-	"ruins":    {"color": Color(0.55, 0.35, 0.60), "height": 16.0},
-	"volcano":  {"color": Color(0.80, 0.25, 0.10), "height": 44.0},
+	"field":    Color(0.95, 0.85, 0.20),
+	"forest":   Color(0.20, 0.65, 0.20),
+	"mountain": Color(0.60, 0.60, 0.60),
+	"lake":     Color(0.20, 0.45, 0.85),
+	"ruins":    Color(0.55, 0.45, 0.65),
+	"volcano":  Color(0.80, 0.25, 0.10),
 }
 
 const OUTLINE      : Color = Color(0.0, 0.0, 0.0, 0.22)
@@ -88,11 +88,9 @@ func _draw_tile(col: int, row: int) -> void:
 		ttype = str(tile.get("tile_type", "field"))
 		owner = str(tile.get("occupied_by", ""))
 
-	var info    : Dictionary = TERRAIN.get(ttype, TERRAIN["field"]) as Dictionary
-	var bc      : Color      = info.get("color",  Color(0.6, 0.6, 0.6)) as Color
-	var bh      : float      = float(info.get("height", 5.0))
+	var bc : Color = TERRAIN.get(ttype, TERRAIN["field"]) as Color
 
-	# Ground diamond — always drawn.
+	# Flat ground diamond.
 	var gp := PackedVector2Array([
 		center + Vector2(0,   -hh),
 		center + Vector2(hw,  0),
@@ -102,39 +100,7 @@ func _draw_tile(col: int, row: int) -> void:
 	draw_colored_polygon(gp, bc)
 	draw_polyline(PackedVector2Array([gp[0], gp[1], gp[2], gp[3], gp[0]]), OUTLINE, 1.0)
 
-	# Extrude terrain height (skip for flat tiles like lake / field).
-	if bh > 4.0:
-		# Right face
-		var rf := PackedVector2Array([
-			center + Vector2(hw,  0),
-			center + Vector2(0,   hh),
-			center + Vector2(0,   hh - bh),
-			center + Vector2(hw,  -bh),
-		])
-		draw_colored_polygon(rf, bc.darkened(0.32))
-		draw_polyline(PackedVector2Array([rf[0], rf[1], rf[2], rf[3], rf[0]]), OUTLINE, 1.0)
-
-		# Left face
-		var lf := PackedVector2Array([
-			center + Vector2(-hw, 0),
-			center + Vector2(0,   hh),
-			center + Vector2(0,   hh - bh),
-			center + Vector2(-hw, -bh),
-		])
-		draw_colored_polygon(lf, bc.darkened(0.48))
-		draw_polyline(PackedVector2Array([lf[0], lf[1], lf[2], lf[3], lf[0]]), OUTLINE, 1.0)
-
-		# Top face (shifted up by bh)
-		var tf := PackedVector2Array([
-			center + Vector2(0,   -hh - bh),
-			center + Vector2(hw,  -bh),
-			center + Vector2(0,   hh - bh),
-			center + Vector2(-hw, -bh),
-		])
-		draw_colored_polygon(tf, bc.lightened(0.10))
-		draw_polyline(PackedVector2Array([tf[0], tf[1], tf[2], tf[3], tf[0]]), OUTLINE, 1.0)
-
-	# Ownership border drawn on the ground diamond for visibility.
+	# Ownership border.
 	if owner == _my_uid and _my_uid != "":
 		draw_polyline(PackedVector2Array([gp[0], gp[1], gp[2], gp[3], gp[0]]), MY_BORDER, 2.5)
 	elif owner != "" and owner != "null":

@@ -7,6 +7,7 @@ extends Control
 @onready var city_name_lbl    : Label    = %CityNameLabel
 @onready var world_map_button : Button   = %WorldMapButton
 @onready var city_view        : Control  = %CityView
+@onready var build_menu       : Control  = %BuildMenu
 
 var _buildings : Dictionary = {}
 var _tick : float = 0.0
@@ -24,6 +25,8 @@ func _ready() -> void:
 	GameState.player_loaded.connect(_on_player_loaded)
 	world_map_button.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/world_map/world_map.tscn"))
 	city_view.connect("slot_tapped", _on_slot_pressed)
+	build_menu.connect("build_requested", _on_build_requested)
+	build_menu.connect("upgrade_requested", _on_upgrade_requested)
 	_update_resource_bar()
 	if GameState.player != null:
 		_on_player_loaded(GameState.player)
@@ -54,10 +57,46 @@ func _load_city() -> void:
 func _on_slot_pressed(col: int, row: int) -> void:
 	var key : String = "%d_%d" % [col, row]
 	if _buildings.has(key):
-		var b : Dictionary = _buildings[key] as Dictionary
-		print("[City] Tapped building: ", b.get("building_type"), " at (", col, ",", row, ")")
+		build_menu.call("show_building", col, row, _buildings[key] as Dictionary)
 	else:
-		print("[City] Empty slot (", col, ",", row, ") — build menu here")
+		build_menu.call("show_empty", col, row)
+
+
+func _on_build_requested(btype: String, col: int, row: int) -> void:
+	build_menu.call("hide_menu")
+	var uid : String = SupabaseClient.get_user_id()
+	if uid == "":
+		return
+	var result : Variant = await SupabaseClient.insert("city_buildings", {
+		"player_id":     uid,
+		"building_type": btype,
+		"level":         1,
+		"grid_x":        col,
+		"grid_y":        row,
+	})
+	if result is Dictionary and (result as Dictionary).has("error"):
+		push_error("[City] Build failed: " + str((result as Dictionary).get("error", "")))
+		return
+	await _load_city()
+	await GameState.refresh_resources()
+
+
+func _on_upgrade_requested(bid: String, col: int, row: int) -> void:
+	build_menu.call("hide_menu")
+	var key : String = "%d_%d" % [col, row]
+	if not _buildings.has(key):
+		return
+	var current_level : int = int((_buildings[key] as Dictionary).get("level", 1))
+	var result : Variant = await SupabaseClient.db_update(
+		"city_buildings",
+		"id=eq." + bid,
+		{"level": current_level + 1}
+	)
+	if result is Dictionary and (result as Dictionary).has("error"):
+		push_error("[City] Upgrade failed: " + str((result as Dictionary).get("error", "")))
+		return
+	await _load_city()
+	await GameState.refresh_resources()
 
 
 func _update_resource_bar() -> void:
